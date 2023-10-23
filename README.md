@@ -7,6 +7,7 @@ A continuación, explicaré los pasos para poner en marcha PrestaShop utilizando
 # Explicación
 <details>
 <summary>Cómo poner en marcha PrestaShop con Docker Compose.</summary>
+
 ## 1. Archivo docker-compose.yml
 
 Creo un archivo `docker-compose.yml` con los siguientes parámetros:
@@ -38,7 +39,6 @@ services:
       - MYSQL_DATABASE=prestashop
     volumes:
       - ./mysql:/var/lib/mysql
-
 ```
 
 En este archivo se definen dos servicios: `prestashop` y `db`. El primero utiliza la imagen oficial de PrestaShop, expone el puerto 8070 y establece variables de entorno para configurar la base de datos, utilizando volúmenes para persistir los datos en la carpeta `./prestashop`. El servicio `db` utiliza la imagen de MySQL, configura las credenciales y utiliza volúmenes para persistir la base de datos en la carpeta `./mysql`.
