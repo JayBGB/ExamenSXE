@@ -15,30 +15,37 @@ Creo un archivo `docker-compose.yml` con los siguientes parámetros:
 ```php
 version: '3'
 services:
-  prestashop:
-    image: prestashop/prestashop
-    container_name: prestashop
-    ports:
-      - "8070:80"
-    environment:
-      - PS_INSTALL_AUTO=1
-      - DB_SERVER=db
-      - DB_USER=prestashop
-      - DB_PASSWD=mysecretpassword
-    depends_on:
-      - db
-    volumes:
-      - ./prestashop:/var/www/html
 
-  db:
+  mysql:
     image: mysql:5.7
     container_name: prestashop-db
     restart: unless-stopped
     environment:
       - MYSQL_ROOT_PASSWORD=rootpassword
       - MYSQL_DATABASE=prestashop
-    volumes:
-      - ./mysql:/var/lib/mysql
+    networks:
+      - prestashop-net
+
+
+  prestashop:
+    image: prestashop/prestashop:latest
+    container_name: prestashop
+    ports:
+      - "8070:80"
+    environment:
+      - PS_INSTALL_AUTO=1
+      - PS_DOMAIN=localhost:8070
+      - DB_SERVER=mysql
+      - DB_NAME=prestashop
+      - DB_USER=prestashop
+      - DB_PASSWD=mysecretpassword
+    depends_on:
+      - mysql
+    networks:
+      - prestashop-net
+
+networks:
+  prestashop-net:
 ```
 
 En este archivo se definen dos servicios: `prestashop` y `db`. El primero utiliza la imagen oficial de PrestaShop, expone el puerto 8070 y establece variables de entorno para configurar la base de datos, utilizando volúmenes para persistir los datos en la carpeta `./prestashop`. El servicio `db` utiliza la imagen de MySQL, configura las credenciales y utiliza volúmenes para persistir la base de datos en la carpeta `./mysql`.
